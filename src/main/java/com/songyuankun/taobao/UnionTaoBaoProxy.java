@@ -22,15 +22,13 @@ import java.util.List;
 @Slf4j
 public class UnionTaoBaoProxy {
 
+    private static final String API_URL = "https://eco.taobao.com/router/rest";
     @Value("${taobao.app_key}")
     private String appKey;
     @Value("${taobao.secret}")
     private String secret;
-
     @Value("${taobao.adzone_id}")
     private Long adzoneId;
-
-    private static final String API_URL = "https://eco.taobao.com/router/rest";
 
     public String getCommand(String keyWord) {
         TaobaoClient client = new DefaultTaobaoClient(API_URL, appKey, secret);

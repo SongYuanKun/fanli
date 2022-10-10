@@ -29,15 +29,60 @@ import java.util.regex.Pattern;
 @Slf4j
 public class UnionJdProxy {
 
+    private static final String API_URL = "https://api.jd.com/routerjson";
     @Value("${jd.app_key}")
     private String appKey;
     @Value("${jd.secret_key}")
     private String secretKey;
-
     @Value("${jd.site_id}")
     private String siteId;
 
-    private static final String API_URL = "https://api.jd.com/routerjson";
+    public static String md5(String source) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] bytes = md.digest(source.getBytes(StandardCharsets.UTF_8));
+        return byte2hex(bytes);
+
+    }
+
+    private static String byte2hex(byte[] bytes) {
+        StringBuilder sign = new StringBuilder();
+        for (byte aByte : bytes) {
+            String hex = Integer.toHexString(aByte & 0xFF);
+            if (hex.length() == 1) {
+                sign.append("0");
+            }
+            sign.append(hex.toUpperCase());
+        }
+        return sign.toString();
+
+    }
+
+    public static boolean areNotEmpty(String[] values) {
+        boolean result = true;
+        if ((values == null) || (values.length == 0)) {
+            result = false;
+        } else {
+            for (String value : values) {
+                result &= !isEmpty(value);
+            }
+        }
+        return result;
+
+    }
+
+    public static boolean isEmpty(String value) {
+        int strLen;
+        if ((value == null) || ((strLen = value.length()) == 0)) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(value.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+
+    }
 
     public String getCommand(final String skuUrl) {
 
@@ -87,7 +132,6 @@ public class UnionJdProxy {
             return result.getString("message");
         }
     }
-
 
     public String getGoodsInfo(String skuUrl) {
 
@@ -146,7 +190,6 @@ public class UnionJdProxy {
 
     }
 
-
     private String getSkuId(String skuUrl) {
         String pattern = "https://item(.m|).jd.com/(product/|)\\d*.html";
         Pattern r = Pattern.compile(pattern);
@@ -179,53 +222,6 @@ public class UnionJdProxy {
         sb.append(appSecret);
         //MD5
         return md5(sb.toString());
-    }
-
-    public static String md5(String source) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] bytes = md.digest(source.getBytes(StandardCharsets.UTF_8));
-        return byte2hex(bytes);
-
-    }
-
-    private static String byte2hex(byte[] bytes) {
-        StringBuilder sign = new StringBuilder();
-        for (byte aByte : bytes) {
-            String hex = Integer.toHexString(aByte & 0xFF);
-            if (hex.length() == 1) {
-                sign.append("0");
-            }
-            sign.append(hex.toUpperCase());
-        }
-        return sign.toString();
-
-    }
-
-    public static boolean areNotEmpty(String[] values) {
-        boolean result = true;
-        if ((values == null) || (values.length == 0)) {
-            result = false;
-        } else {
-            for (String value : values) {
-                result &= !isEmpty(value);
-            }
-        }
-        return result;
-
-    }
-
-    public static boolean isEmpty(String value) {
-        int strLen;
-        if ((value == null) || ((strLen = value.length()) == 0)) {
-            return true;
-        }
-        for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(value.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-
     }
 
 }

@@ -19,6 +19,16 @@ public class WeChatService {
     @Value("${my.wechat.token}")
     String token;
 
+    private static String byteToHex(final byte[] hash) {
+        Formatter formatter = new Formatter();
+        for (byte b : hash) {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+    }
+
     /**
      * 验证微信消息合法性
      */
@@ -43,15 +53,5 @@ public class WeChatService {
             log.error("校验签名异常", e);
         }
         return false;
-    }
-
-    private static String byteToHex(final byte[] hash) {
-        Formatter formatter = new Formatter();
-        for (byte b : hash) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
     }
 }

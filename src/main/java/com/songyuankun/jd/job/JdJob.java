@@ -6,7 +6,7 @@ import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.songyuankun.wechat.auto.reply.service.AdminService;
+import com.songyuankun.reply.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,14 +22,11 @@ import java.util.Map;
 @Slf4j
 public class JdJob {
 
+    private final AdminService adminService;
     @Value("${jd.pt_key}")
     private String ptKey;
-
     @Value("${jd.pt_pin}")
     private String ptPin;
-
-
-    private final AdminService adminService;
 
     public JdJob(AdminService adminService) {
         this.adminService = adminService;

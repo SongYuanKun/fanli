@@ -4,8 +4,8 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.songyuankun.util.RedisUtil;
 import com.songyuankun.reply.dto.QyWeChatMessageDTO;
+import com.songyuankun.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,17 +20,14 @@ import java.util.Map;
 public class AdminService {
 
 
+    private static final String SEND_MESSAGE_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send";
+    private final RedisUtil redisUtil;
     @Value("${my.wechat.admin.agent_id}")
     private Integer agentId;
     @Value("${my.wechat.admin.corp_id}")
     private String corpId;
-
     @Value("${my.wechat.admin.secret}")
     private String secret;
-
-    private static final String SEND_MESSAGE_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send";
-
-    private final RedisUtil redisUtil;
 
     public AdminService(RedisUtil redisUtil) {
         this.redisUtil = redisUtil;

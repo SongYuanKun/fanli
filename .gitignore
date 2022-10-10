@@ -33,6 +33,7 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/resources/config/application.yml
+**/resources/rebel.xml
 
 ### Mac OS ###
 .DS_Store
