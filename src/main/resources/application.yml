@@ -1,0 +1,60 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    url: jdbc:mysql:// 192.168.31.88:3306/wechat?useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: dev
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    database: MYSQL
+    hibernate:
+      ddl-auto: update
+    database-platform: com.songyuankun.wechat.config.MysqlConfig
+  redis:
+    database: 0
+    host: 192.168.31.88
+    port: 6379
+    password: 123456
+  cache:
+    type: redis
+  session:
+    store-type: redis
+  jackson:
+    time-zone: GMT+8
+jwt:
+  header: Authorization
+  expiration: 864000
+  tokenHead: Bearer
+my:
+  wechat:
+    appid:
+    secret:
+    token:
+    admin:
+      corp_id:
+      agent_id:
+      secret:
+
+qiniu:
+  ak:
+  sk:
+  bucket:
+  cdn_host:
+rocketmq:
+  name-server: 192.168.31.88:9876
+  producer:
+    group: DEFAULT_GROUP
+
+jd:
+  app_key:
+  secret_key:
+  site_id:
+  pt_key:
+  pt_pin:
+
+taobao:
+  app_key:
+  secret:
+  adzone_id:

@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "my.wechat.secret",
+      "type": "java.lang.String",
+      "description": "secret."
+    },
+    {
+      "name": "my.wechat.appid",
+      "type": "java.lang.String",
+      "description": "Description for my.we-chat.appId."
+    },
+    {
+      "name": "jwt.header",
+      "type": "java.lang.String",
+      "description": "Description for jwt.header."
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.String",
+      "description": "Description for jwt.expiration."
+    },
+    {
+      "name": "jwt.tokenHead",
+      "type": "java.lang.String",
+      "description": "Description for jwt.tokenHead."
+    },
+    {
+      "name": "qiniu.ak",
+      "type": "java.lang.String",
+      "description": "七牛云ak."
+    },
+    {
+      "name": "qiniu.sk",
+      "type": "java.lang.String",
+      "description": "七牛云sk."
+    },
+    {
+      "name": "qiniu.bucket",
+      "type": "java.lang.String",
+      "description": "七牛云桶名."
+    },
+    {
+      "name": "qiniu.cdn_host",
+      "type": "java.lang.String",
+      "description": "七牛云域名."
+    }
+  ]
+}
