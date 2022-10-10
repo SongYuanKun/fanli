@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.7.4")
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.19.2')
     }
     repositories {
         maven {
@@ -59,4 +60,11 @@ dependencies {
 
 test {
     enabled false
+}
+
+apply plugin: 'com.palantir.docker'
+docker {
+    dockerfile file('Dockerfile') //DockerFile路径
+    name "${project.group}/${project.getProperties().get('docker.repo')}:${project.getProperties().get('docker.tag')}"
+    buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
