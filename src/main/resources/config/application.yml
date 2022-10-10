@@ -1,0 +1,59 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    url: jdbc:mysql:// 192.168.31.88:3306/wechat?useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: dev
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    database: MYSQL
+    hibernate:
+      ddl-auto: update
+    database-platform: com.songyuankun.wechat.config.MysqlConfig
+  redis:
+    database: 0
+    host: 192.168.31.88
+    port: 6379
+    password: 123456
+  cache:
+    type: redis
+  session:
+    store-type: redis
+  jackson:
+    time-zone: GMT+8
+jwt:
+  header: Authorization
+  expiration: 864000
+  tokenHead: Bearer
+my:
+  wechat:
+    appid: wx535bf80f60239064
+    secret: 93c631b2be9d60689dad05af5c30cf7d
+    token: songyuankun
+    admin:
+      corp_id: wwd82240d06778f599
+      agent_id: 1000002
+      secret: H9O_sROsnyCOaa5EsUhtYtF9aIVJPwAKZCMX4-r5GPM
+qiniu:
+  ak: Gd1mJsdRLIhf6fsZb8w8Tjp9Ppir84oTnIQJxluW
+  sk: -9rQBQePo6D71u5hppWnQfdqjjp2Q-99r3_-6PCY
+  bucket: songyuankun
+  cdn_host: http://pic-oss.songyuankun.top
+rocketmq:
+  name-server: 192.168.31.88:9876
+  producer:
+    group: DEFAULT_GROUP
+
+jd:
+  app_key: 52d6f6aa70913e9bd38a24fff2369254
+  secret_key: 0741bc66c4ef48f181cc7a062287cc15
+  site_id: 4100827002
+  pt_key: AAJjQAMNADDXOjfY_5Jb0A2irhxT0BjZnaUp4DVKXLWVv4iDFiQonw9wDIMRkVVmYGXWV7Jy3G8
+  pt_pin: 王俐丽
+
+taobao:
+  app_key: 33858466
+  secret: 78d1c3bec7a794ca9e016505d32bbba4
+  adzone_id: 112225500337
