@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8084
 spring:
   datasource:
     url: jdbc:mysql:// 192.168.31.88:3306/wechat?useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true
@@ -11,7 +11,7 @@ spring:
     database: MYSQL
     hibernate:
       ddl-auto: update
-    database-platform: com.songyuankun.wechat.config.MysqlConfig
+    database-platform: com.songyuankun.config.MysqlConfig
   redis:
     database: 0
     host: 192.168.31.88
@@ -23,10 +23,6 @@ spring:
     store-type: redis
   jackson:
     time-zone: GMT+8
-jwt:
-  header: Authorization
-  expiration: 864000
-  tokenHead: Bearer
 my:
   wechat:
     appid:
@@ -36,16 +32,6 @@ my:
       corp_id:
       agent_id:
       secret:
-
-qiniu:
-  ak:
-  sk:
-  bucket:
-  cdn_host:
-rocketmq:
-  name-server: 192.168.31.88:9876
-  producer:
-    group: DEFAULT_GROUP
 
 jd:
   app_key:

@@ -6,7 +6,7 @@
 
 // ------------------------------------------------------------------------
 
-package com.songyuankun.wechat.reply.aes;
+package com.songyuankun.reply.aes;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;

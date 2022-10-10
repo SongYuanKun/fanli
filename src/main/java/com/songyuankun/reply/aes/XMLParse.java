@@ -6,7 +6,7 @@
 
 // ------------------------------------------------------------------------
 
-package com.songyuankun.wechat.reply.aes;
+package com.songyuankun.reply.aes;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

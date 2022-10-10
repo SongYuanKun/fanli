@@ -1,4 +1,4 @@
-package com.songyuankun.wechat.reply.aes;
+package com.songyuankun.reply.aes;
 
 @SuppressWarnings("serial")
 public class AesException extends Exception {

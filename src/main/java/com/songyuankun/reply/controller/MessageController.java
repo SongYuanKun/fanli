@@ -1,9 +1,9 @@
-package com.songyuankun.wechat.reply.controller;
+package com.songyuankun.reply.controller;
 
 import com.songyuankun.jd.UnionJdProxy;
+import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.taobao.UnionTaoBaoProxy;
-import com.songyuankun.wechat.reply.dto.MessageDTO;
-import com.songyuankun.wechat.reply.service.WeChatService;
+import com.songyuankun.reply.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

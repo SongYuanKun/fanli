@@ -1,11 +1,11 @@
-package com.songyuankun.wechat.reply.service;
+package com.songyuankun.reply.service;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.songyuankun.util.RedisUtil;
-import com.songyuankun.wechat.reply.dto.QyWeChatMessageDTO;
+import com.songyuankun.reply.dto.QyWeChatMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

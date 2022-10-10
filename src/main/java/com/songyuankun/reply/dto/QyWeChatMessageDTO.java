@@ -1,4 +1,4 @@
-package com.songyuankun.wechat.reply.dto;
+package com.songyuankun.reply.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;

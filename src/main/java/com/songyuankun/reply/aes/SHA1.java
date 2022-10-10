@@ -6,7 +6,7 @@
 
 // ------------------------------------------------------------------------
 
-package com.songyuankun.wechat.reply.aes;
+package com.songyuankun.reply.aes;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
