@@ -6,8 +6,9 @@ buildscript {
     repositories {
         maven {
             url 'https://maven.aliyun.com/repository/public/'
+            allowInsecureProtocol = true
         }
-        mavenCentral()
+        mavenLocal()
     }
 }
 
@@ -24,9 +25,9 @@ version '1.0-SNAPSHOT'
 repositories {
     maven {
         url 'https://maven.aliyun.com/repository/public/'
+        allowInsecureProtocol = true
     }
     mavenLocal()
-    mavenCentral()
 }
 
 dependencies {
@@ -42,7 +43,7 @@ dependencies {
 dependencies {
     implementation 'mysql:mysql-connector-java'
     implementation 'mysql:mysql-connector-java'
-    implementation 'com.alibaba:druid:1.1.9'
+    implementation 'com.alibaba:druid:1.2.13-SNSAPSHOT'
 }
 
 dependencies {
@@ -52,8 +53,8 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     implementation 'com.alibaba:fastjson:2.0.14'
-    implementation 'cn.hutool:hutool-all:5.8.7'
-    implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation 'cn.hutool:hutool-all:5.8.8'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation files('lib/taobao-sdk-java-auto_1564132205913-20220902.jar')
 }
