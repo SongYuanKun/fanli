@@ -2,7 +2,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.7.4")
         classpath('com.bmuschko:gradle-docker-plugin:6.7.0')
-        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.22.2')
     }
     repositories {
         maven {
@@ -19,6 +18,7 @@ plugins {
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.bmuschko.docker-spring-boot-application'
+apply plugin: 'com.bmuschko.docker-remote-api'
 
 group 'com.songyuankun'
 version '1.0-SNAPSHOT'
@@ -30,6 +30,7 @@ repositories {
         allowInsecureProtocol = true
     }
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
@@ -54,7 +55,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
-    implementation 'com.alibaba:fastjson:2.0.14'
+    implementation 'com.alibaba:fastjson:2.0.15'
     implementation 'cn.hutool:hutool-all:5.8.8'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
@@ -71,9 +72,11 @@ jar {
 }
 
 docker {
+    url = 'tcp://192.168.31.88:2375'
     springBootApplication {
-        baseImage = 'openjdk:8-alpine'
+        baseImage = 'openjdk:8'
         ports = [8084, 8084]
+        images = ['fanli:latest']
         jvmArgs = ['-Dspring.profiles.active=production', '-Xmx2048m']
     }
 }
@@ -82,8 +85,137 @@ dockerCreateDockerfile {
     instruction 'RUN ls -la'
     environmentVariable 'JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap'
 }
-dockerCreateDockerfile.instructionsFromTemplate file('Dockerfile')
 
-docker {
-    url = 'tcp://192.168.31.88:2375'
+ext {
+    // 设置 DEBUG 容器对外端口
+    DEBUG_PORT = "8084"
+    DEBUG_NAME = "latest"
+}
+
+def releaseTime() {
+    return new Date().format("HHmmss", TimeZone.getTimeZone("GMT+08:00"))
+}
+
+def buildImage() {
+    return "${project.group}.${project.name}:${project.version}.build-${releaseTime()}"
+}
+
+def image() {
+    return "${project.group}.${project.name}:${project.version}"
+}
+
+def debugImage() {
+    return "${project.group}.${project.name}:${DEBUG_NAME}"
+}
+
+def debugContainer() {
+    return "${DEBUG_NAME}.${project.group}.${project.name}"
+}
+
+// use fully qualified class name
+import com.bmuschko.gradle.docker.tasks.image.*
+import com.bmuschko.gradle.docker.tasks.container.*
+
+
+task _createDockerfile(type: Dockerfile) {
+    group 'docker'
+    description 'Generate docker file for the application'
+    //destFile = project.file('Dockerfile')
+
+    from('http://192.168.31.88:5000/alpine-jre8:3.8-201')
+    addFile("libs/${project.name}-${project.version}.jar", "/app.jar")
+    exposePort(80)
+    defaultCommand('java', '-jar', "/app.jar")
+}
+
+task _createImage(type: DockerBuildImage) {
+    group 'docker'
+    description 'Executes build, generates a docker file and builds image from it'
+    dependsOn(build, _createDockerfile)
+
+    dockerFile = project.file("${project.buildDir}/docker/Dockerfile")
+    inputDir = project.buildDir
+    images.add(buildImage())
+    images.add(image())
+}
+
+task pushDevImage(type: DockerPushImage) {
+    group 'docker'
+    dependsOn _createImage
+    images = [buildImage().toString()]
+}
+
+task pushPrdImage(type: DockerPushImage) {
+    group 'docker'
+    images = [image().toString()]
+}
+
+task print() {
+    group 'docker'
+    doLast {
+        println buildImage()
+        println image()
+    }
+}
+
+
+task printDebug() {
+    group 'docker-debug'
+    doLast {
+        println debugImage()
+    }
+}
+
+task _createDebugDockerfile(type: Dockerfile) {
+    group 'docker-debug'
+    description 'Generate docker file for the application'
+    //destFile = project.file('Dockerfile')
+
+    from('http://192.168.31.88:5000/openjdk:8')
+    addFile("libs/${project.name}-${project.version}.jar", "/app.jar")
+    exposePort(8084)
+    defaultCommand('java', '-jar', '-Dspring.profiles.active=debug', "/app.jar")
+}
+
+task _createDebugImage(type: DockerBuildImage) {
+    group 'docker-debug'
+    description 'Executes build, generates a docker file and builds image from it'
+    dependsOn(build, _createDebugDockerfile)
+    dockerFile = project.file("${project.buildDir}/docker/Dockerfile")
+    inputDir = project.buildDir
+    images.add(debugImage())
+}
+
+task pushDebugImage(type: DockerPushImage) {
+    group 'docker-debug'
+    dependsOn _createDebugImage
+
+    doLast {
+        images = ["http://192.168.31.88:5000/${project.group}.${project.name}:${DEBUG_NAME}".toString()]
+    }
+}
+
+task _createDebugContainer(type: DockerCreateContainer) {
+    group 'docker-debug'
+    dependsOn pushDebugImage
+
+    containerName = debugContainer()
+    targetImageId debugImage()
+
+    hostConfig.portBindings = ["${DEBUG_PORT}:8084"]
+    // 因dockerJava代码重构，类结构调整导致无法正常运行，需要等 bmuschko/gradle-docker-plugin 升级修复此问题
+//    hostConfig.publishAll = true
+    hostConfig.autoRemove = true
+    exposePorts('tcp', [8084])    // << NECESSARY, BUT NOT DOCUMENTED!
+}
+
+task startDebugContainer(type: DockerStartContainer) {
+    group 'docker-debug'
+    dependsOn(_createDebugContainer)
+    targetContainerId _createDebugContainer.getContainerId()
+}
+
+task stopDebugContainer(type: DockerStopContainer) {
+    group 'docker-debug'
+    targetContainerId debugContainer()
 }

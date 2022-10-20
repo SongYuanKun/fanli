@@ -3,7 +3,7 @@ FROM openjdk:8
 #指定作者
 MAINTAINER songyuankun
 
-EXPOSE 8082
+EXPOSE 8084
 
 ENV LANG C.UTF-8
 
