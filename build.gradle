@@ -60,6 +60,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation files('lib/taobao-sdk-java-auto_1564132205913-20220902.jar')
+    implementation files('lib/open-api-sdk-2.0-2022-10-21.jar')
 }
 
 test {
