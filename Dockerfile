@@ -7,7 +7,7 @@ EXPOSE 8084
 
 ENV LANG C.UTF-8
 
-#ADD ./src/main/resources/config/application.yml /application.yml
+ADD ./src/main/resources/config/application.yml /application.yml
 
 #将复制指定的docker-demo-0.0.1-SNAPSHOT.jar为容器中的job.jar，相当于拷贝到容器中取了个别名
 ADD ./build/libs/fanli-1.0-SNAPSHOT.jar /application.jar

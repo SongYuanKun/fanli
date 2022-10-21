@@ -66,18 +66,13 @@ test {
     enabled false
 }
 
-jar {
-    baseName = "spring-boot-gradle-for-docker"
-    version = 1.0
-}
-
 docker {
     url = 'tcp://192.168.31.88:2375'
     springBootApplication {
         baseImage = 'openjdk:8'
         ports = [8084, 8084]
         images = ['fanli:latest']
-        jvmArgs = ['-Dspring.profiles.active=production', '-Xmx2048m']
+        jvmArgs = ['-Xmx512m']
     }
 }
 
@@ -122,7 +117,7 @@ task _createDockerfile(type: Dockerfile) {
     description 'Generate docker file for the application'
     //destFile = project.file('Dockerfile')
 
-    from('http://192.168.31.88:5000/alpine-jre8:3.8-201')
+    from('http://192.168.31.88:5000/openjdk:8')
     addFile("libs/${project.name}-${project.version}.jar", "/app.jar")
     exposePort(80)
     defaultCommand('java', '-jar', "/app.jar")
