@@ -39,6 +39,8 @@ jd:
   site_id:
   pt_key:
   pt_pin:
+  key:
+  union_id:
 
 taobao:
   app_key:

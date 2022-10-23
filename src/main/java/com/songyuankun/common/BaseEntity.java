@@ -9,6 +9,9 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.MappedSuperclass;
 
+/**
+ * @author songyuankun
+ */
 @Getter
 @Setter
 @ToString

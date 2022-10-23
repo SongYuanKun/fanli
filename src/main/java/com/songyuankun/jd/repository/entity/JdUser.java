@@ -11,6 +11,9 @@ import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 
+/**
+ * @author songyuankun
+ */
 @Proxy(lazy = false)
 @Entity
 @Table(name = "jd_user")
@@ -24,6 +27,12 @@ public class JdUser extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private String id;
+    private Integer id;
+
+    @Column(name = "wechat_user", nullable = false)
+    private String wechatUser;
+
+    @Column(name = "position_id", nullable = false)
+    private String positionId;
 
 }
