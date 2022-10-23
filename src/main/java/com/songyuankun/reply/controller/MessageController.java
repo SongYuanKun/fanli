@@ -36,6 +36,7 @@ public class MessageController {
                 command = unionTaoBaoProxy.getCommand(messageDTO.getContent());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return messageDTO.replay(e.getMessage());
         }
         return messageDTO.replay(command);

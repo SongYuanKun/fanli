@@ -1,6 +1,7 @@
 package com.songyuankun.jd;
 
 import cn.hutool.http.*;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
@@ -66,6 +67,7 @@ public class UnionJdProxy {
 
         try {
             UnionOpenPromotionCommonGetResponse execute = client.execute(request);
+            System.out.println(JSON.toJSONString(execute));
             PromotionCodeResp data = execute.getGetResult().getData();
             return StringUtils.defaultIfBlank(data.getJCommand(), data.getClickURL());
         } catch (Exception e) {
