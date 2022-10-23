@@ -103,11 +103,11 @@ task createDockerfile(type: Dockerfile) {
     group 'docker'
     description 'Generate docker file for the application'
     //destFile = project.file('Dockerfile')
-
     from('openjdk:8')
-    addFile("libs/${project.name}-${project.version}.jar", "/app.jar")
+    addFile("libs/${project.name}-${project.version}.jar", "/application.jar")
     exposePort(8084)
-    defaultCommand('java', '-jar', "/app.jar")
+    environmentVariable 'LANG','C.UTF-8'
+    entryPoint("java", "-jar", "-Duser.timezone=GMT+08", "/application.jar")
 }
 
 task buildMyAppImage(type: DockerBuildImage) {
@@ -119,9 +119,11 @@ task buildMyAppImage(type: DockerBuildImage) {
 }
 
 
+
 task createMyAppContainer(type: DockerCreateContainer) {
     group 'docker-'
     dependsOn buildMyAppImage
+    containerName = container()
     targetImageId buildMyAppImage.getImageId()
     hostConfig.portBindings = ['8084:8084']
     hostConfig.autoRemove = true
