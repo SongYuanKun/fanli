@@ -55,7 +55,7 @@ public class UnionTaoBaoProxy {
                         .multiply(new BigDecimal("0.001"))
                         .setScale(2, RoundingMode.UP)
                 + "\r\n" +
-                "下单地址：" +
+                "下单地址：https:" +
                 StringUtils.defaultIfBlank(
                         mapData.getCouponShareUrl(),
                         mapData.getUrl()
