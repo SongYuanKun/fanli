@@ -4,7 +4,6 @@ import com.songyuankun.jd.repository.JdUserRepository;
 import com.songyuankun.jd.repository.entity.JdUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,11 +13,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UnionJdService {
 
+    private final JdUserRepository jdUserRepository;
+    private final UnionJdProxy unionJdProxy;
 
-    @Autowired
-    private JdUserRepository jdUserRepository;
-    @Autowired
-    private  UnionJdProxy unionJdProxy;
+    public UnionJdService(JdUserRepository jdUserRepository, UnionJdProxy unionJdProxy) {
+        this.jdUserRepository = jdUserRepository;
+        this.unionJdProxy = unionJdProxy;
+    }
 
     public JdUser getJdUser(String id) {
         return jdUserRepository.findFirstByWechatUser(id).orElseGet(() -> createJdUser(id));
