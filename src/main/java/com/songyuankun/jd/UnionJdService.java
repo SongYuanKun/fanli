@@ -36,11 +36,11 @@ public class UnionJdService {
     }
 
     public String getGoodsInfo(String skuUrl, String fromUserId) {
-        JdUser jdUser = getJdUser(fromUserId);
         String skuId = JdUtil.getSkuId(skuUrl);
         if (StringUtils.isBlank(skuId)) {
             return null;
         }
+        JdUser jdUser = getJdUser(fromUserId);
         return unionJdProxy.getGoodsInfo(skuUrl, jdUser.getPositionId());
     }
 }

@@ -1,6 +1,10 @@
 package com.songyuankun.jd;
 
-import cn.hutool.http.*;
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpStatus;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.jd.open.api.sdk.DefaultJdClient;
@@ -78,7 +82,6 @@ public class UnionJdProxy {
     }
 
     public String getGoodsInfo(String skuUrl, String positionId) {
-
         String url = getCommand(skuUrl, positionId);
         String skuId = JdUtil.getSkuId(skuUrl);
         if (StringUtils.isBlank(skuId)) {
