@@ -20,6 +20,7 @@ import com.jd.open.api.sdk.response.kplunion.UnionOpenPromotionCommonGetResponse
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class UnionJdProxy {
             UnionOpenPromotionCommonGetResponse execute = client.execute(request);
             System.out.println(JSON.toJSONString(execute));
             PromotionCodeResp data = execute.getGetResult().getData();
-            return StringUtils.defaultIfBlank(data.getJCommand(), data.getClickURL());
+            return ObjectUtils.isEmpty(data) ? null : StringUtils.defaultIfBlank(data.getJCommand(), data.getClickURL());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -83,6 +84,9 @@ public class UnionJdProxy {
 
     public String getGoodsInfo(String skuUrl, String positionId) {
         String url = getCommand(skuUrl, positionId);
+        if (StringUtils.isBlank(url)) {
+            return "该商品不参与优惠";
+        }
         String skuId = JdUtil.getSkuId(skuUrl);
         if (StringUtils.isBlank(skuId)) {
             return null;
