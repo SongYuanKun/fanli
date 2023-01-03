@@ -25,31 +25,27 @@ public class PddProxy {
     private String clientId;
     @Value("${pdd.client_secret}")
     private String clientSecret;
-    @Value("${my.wechat.token}")
-    String token;
 
-    public String getPddDdkGoodsZsUnitUrlGen(String url) {
+    public PddDdkGoodsZsUnitUrlGenResponse.GoodsZsUnitGenerateResponse getPddDdkGoodsZsUnitUrlGen(String url) {
         PopClient client = new PopHttpClient(clientId, clientSecret);
-
         PddDdkGoodsZsUnitUrlGenRequest request = new PddDdkGoodsZsUnitUrlGenRequest();
         request.setPid(pid);
         request.setSourceUrl(url);
         PddDdkGoodsZsUnitUrlGenResponse response;
         try {
             response = client.syncInvoke(request);
-            System.out.println(JSON.toJSONString(response));
-            return response.getGoodsZsUnitGenerateResponse().getMultiGroupMobileShortUrl();
+            return response.getGoodsZsUnitGenerateResponse();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public PddDdkGoodsDetailResponse.GoodsDetailResponseGoodsDetailsItem getPddGoodInfo(String url) {
-        String goodsId = getGoodsId(url);
+        String goodsSign = getGoodsSign(url);
         PopClient client = new PopHttpClient(clientId, clientSecret);
         PddDdkGoodsDetailRequest request = new PddDdkGoodsDetailRequest();
         request.setPid(pid);
-        request.setSearchId(goodsId);
+        request.setGoodsSign(goodsSign);
         try {
             PddDdkGoodsDetailResponse response = client.syncInvoke(request);
             System.out.println(JSON.toJSONString(response));
@@ -60,14 +56,14 @@ public class PddProxy {
     }
 
 
-    public static String getGoodsId(String skuUrl) {
-        String pattern = "goods_id=\\d*";
+    public static String getGoodsSign(String skuUrl) {
+        String pattern = "goods_sign=\\w*";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(skuUrl);
         if (!m.find()) {
             return "";
         }
         String url = m.group();
-        return url.substring(url.lastIndexOf("goods_id=") + 9);
+        return url.substring(url.lastIndexOf("goods_sign=") + 11);
     }
 }
