@@ -1,17 +1,20 @@
 package com.songyuankun.jd;
 
+import com.songyuankun.EnableGetGoodInfo;
 import com.songyuankun.jd.repository.JdUserRepository;
 import com.songyuankun.jd.repository.entity.JdUser;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author songyuankun
  */
 @Service
 @Slf4j
-public class UnionJdService {
+public class UnionJdService implements EnableGetGoodInfo {
 
     private final JdUserRepository jdUserRepository;
     private final UnionJdProxy unionJdProxy;
@@ -36,7 +39,8 @@ public class UnionJdService {
         return jdUserRepository.save(jdUser);
     }
 
-    public String getGoodsInfo(String skuUrl, String fromUserId) {
+    @Override
+    public String getGoodInfo(String skuUrl, String fromUserId) {
         String skuId = JdUtil.getSkuId(skuUrl);
         if (StringUtils.isBlank(skuId)) {
             return null;

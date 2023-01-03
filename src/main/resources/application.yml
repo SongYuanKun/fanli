@@ -47,3 +47,8 @@ taobao:
   app_key:
   secret:
   adzone_id:
+
+pdd:
+  pid:
+  client_id:
+  client_secret:
