@@ -34,9 +34,9 @@ public class PddService implements EnableGetGoodInfo {
             .multiply(new BigDecimal("0.01"))
             .setScale(2, RoundingMode.DOWN) + "\r\n" +
             "返佣比例：" +
-        BigDecimal.valueOf(pddGoodInfo.getPromotionRate())
-            .multiply(new BigDecimal("0.1"))
-            .setScale(1, RoundingMode.DOWN)+ "%\r\n" +
+            BigDecimal.valueOf(pddGoodInfo.getPromotionRate())
+                .multiply(new BigDecimal("0.1"))
+                .setScale(1, RoundingMode.DOWN) + "%\r\n" +
             "预计返佣：" +
             BigDecimal.valueOf(pddGoodInfo.getMinGroupPrice())
                 .multiply(BigDecimal.valueOf(pddGoodInfo.getPromotionRate()))
