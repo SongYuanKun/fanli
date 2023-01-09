@@ -1,6 +1,6 @@
 package com.songyuankun.reply.controller;
 
-import com.songyuankun.EnableGetGoodInfo;
+import com.songyuankun.unionService;
 import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.reply.service.WeChatService;
 import com.songyuankun.taobao.UnionTaoBaoProxy;
@@ -26,12 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageController {
 
     private final WeChatService weChatService;
-    private final List<EnableGetGoodInfo> enableGetGoodInfoList;
+    private final List<unionService> unionServiceList;
     private final UnionTaoBaoProxy unionTaoBaoProxy;
 
-    public MessageController(WeChatService weChatService, List<EnableGetGoodInfo> enableGetGoodInfoList, UnionTaoBaoProxy unionTaoBaoProxy) {
+    public MessageController(WeChatService weChatService, List<unionService> unionServiceList, UnionTaoBaoProxy unionTaoBaoProxy) {
         this.weChatService = weChatService;
-        this.enableGetGoodInfoList = enableGetGoodInfoList;
+        this.unionServiceList = unionServiceList;
         this.unionTaoBaoProxy = unionTaoBaoProxy;
     }
 
@@ -40,8 +40,8 @@ public class MessageController {
         log.info("messageDTO:{}", messageDTO);
         String command = null;
         try {
-            for (EnableGetGoodInfo enableGetGoodInfo : enableGetGoodInfoList) {
-                command = enableGetGoodInfo.getGoodInfo(messageDTO.getContent(), messageDTO.getFromUserName());
+            for (unionService unionService : unionServiceList) {
+                command = unionService.getGoodInfo(messageDTO.getContent(), messageDTO.getFromUserName());
                 if (StringUtils.isNotBlank(command)) {
                     break;
                 }

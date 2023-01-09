@@ -2,7 +2,7 @@ package com.songyuankun.pdd;
 
 import com.pdd.pop.sdk.http.api.pop.response.PddDdkGoodsDetailResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddDdkGoodsZsUnitUrlGenResponse;
-import com.songyuankun.EnableGetGoodInfo;
+import com.songyuankun.unionService;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.math.RoundingMode;
  * @author songyuankun
  */
 @Service
-public class PddService implements EnableGetGoodInfo {
+public class PddService implements unionService {
     private final PddProxy pddProxy;
 
     public PddService(PddProxy pddProxy) {

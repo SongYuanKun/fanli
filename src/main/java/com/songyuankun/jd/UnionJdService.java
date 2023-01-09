@@ -1,8 +1,8 @@
 package com.songyuankun.jd;
 
-import com.songyuankun.EnableGetGoodInfo;
 import com.songyuankun.jd.repository.JdUserRepository;
-import com.songyuankun.jd.repository.entity.JdUser;
+import com.songyuankun.jd.repository.entity.JdUserPO;
+import com.songyuankun.unionService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class UnionJdService implements EnableGetGoodInfo {
+public class UnionJdService implements unionService {
 
     private final JdUserRepository jdUserRepository;
     private final UnionJdProxy unionJdProxy;
@@ -24,19 +24,19 @@ public class UnionJdService implements EnableGetGoodInfo {
         this.unionJdProxy = unionJdProxy;
     }
 
-    public JdUser getJdUser(String id) {
+    public JdUserPO getJdUser(String id) {
         return jdUserRepository.findFirstByWechatUser(id).orElseGet(() -> createJdUser(id));
     }
 
-    private JdUser createJdUser(String wechatUser) {
+    private JdUserPO createJdUser(String wechatUser) {
         if (StringUtils.isBlank(wechatUser)) {
             return null;
         }
         String position = unionJdProxy.createPosition(wechatUser);
-        JdUser jdUser = new JdUser();
-        jdUser.setWechatUser(wechatUser);
-        jdUser.setPositionId(position);
-        return jdUserRepository.save(jdUser);
+        JdUserPO jdUserPO = new JdUserPO();
+        jdUserPO.setWechatUser(wechatUser);
+        jdUserPO.setPositionId(position);
+        return jdUserRepository.save(jdUserPO);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class UnionJdService implements EnableGetGoodInfo {
         if (StringUtils.isBlank(skuId)) {
             return null;
         }
-        JdUser jdUser = getJdUser(fromUserId);
-        return unionJdProxy.getGoodsInfo(skuUrl, jdUser.getPositionId());
+        JdUserPO jdUserPO = getJdUser(fromUserId);
+        return unionJdProxy.getGoodsInfo(skuUrl, jdUserPO.getPositionId());
     }
 }
