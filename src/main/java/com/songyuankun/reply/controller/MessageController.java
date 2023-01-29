@@ -1,21 +1,14 @@
 package com.songyuankun.reply.controller;
 
-import com.songyuankun.unionService;
 import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.reply.service.WeChatService;
 import com.songyuankun.taobao.UnionTaoBaoProxy;
-
+import com.songyuankun.unionService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author songyuankun
@@ -46,9 +39,7 @@ public class MessageController {
                     break;
                 }
             }
-            if (StringUtils.isBlank(command)) {
-                command = unionTaoBaoProxy.getCommand(messageDTO.getContent());
-            }
+            command = "仅支持淘宝、京东、拼多多的链接。或该商品不参与优惠";
         } catch (Exception e) {
             e.printStackTrace();
             return messageDTO.replay(e.getMessage());
