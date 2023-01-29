@@ -7,7 +7,6 @@ import com.pdd.pop.sdk.http.api.pop.request.PddDdkGoodsDetailRequest;
 import com.pdd.pop.sdk.http.api.pop.request.PddDdkGoodsZsUnitUrlGenRequest;
 import com.pdd.pop.sdk.http.api.pop.response.PddDdkGoodsDetailResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddDdkGoodsZsUnitUrlGenResponse;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,7 @@ public class PddProxy {
     private String clientId;
     @Value("${pdd.client_secret}")
     private String clientSecret;
+    private final static Pattern PATTERN = Pattern.compile("goods_sign=\\w*");
 
     public PddDdkGoodsZsUnitUrlGenResponse.GoodsZsUnitGenerateResponse getPddDdkGoodsZsUnitUrlGen(String url) {
         PopClient client = new PopHttpClient(clientId, clientSecret);
@@ -57,9 +57,7 @@ public class PddProxy {
 
 
     public static String getGoodsSign(String skuUrl) {
-        String pattern = "goods_sign=\\w*";
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(skuUrl);
+        Matcher m = PATTERN.matcher(skuUrl);
         if (!m.find()) {
             return "";
         }
