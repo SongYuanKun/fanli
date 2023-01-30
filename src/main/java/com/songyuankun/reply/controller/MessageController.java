@@ -2,7 +2,6 @@ package com.songyuankun.reply.controller;
 
 import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.reply.service.WeChatService;
-import com.songyuankun.taobao.UnionTaoBaoProxy;
 import com.songyuankun.unionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,12 +19,10 @@ public class MessageController {
 
     private final WeChatService weChatService;
     private final List<unionService> unionServiceList;
-    private final UnionTaoBaoProxy unionTaoBaoProxy;
 
-    public MessageController(WeChatService weChatService, List<unionService> unionServiceList, UnionTaoBaoProxy unionTaoBaoProxy) {
+    public MessageController(WeChatService weChatService, List<unionService> unionServiceList) {
         this.weChatService = weChatService;
         this.unionServiceList = unionServiceList;
-        this.unionTaoBaoProxy = unionTaoBaoProxy;
     }
 
     @PostMapping(value = "auto-reply", consumes = "text/xml", produces = "text/xml")
@@ -39,7 +36,10 @@ public class MessageController {
                     break;
                 }
             }
-            command = "仅支持淘宝、京东、拼多多的链接。或该商品不参与优惠";
+            if (StringUtils.isBlank(command)) {
+                command = "仅支持淘宝、京东、拼多多的链接。或该商品不参与优惠";
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return messageDTO.replay(e.getMessage());
