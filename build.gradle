@@ -74,12 +74,6 @@ test {
 
 docker {
     url = 'tcp://192.168.31.88:2375'
-    springBootApplication {
-        baseImage = 'openjdk:8'
-        ports = [8084, 8084]
-        images = ['fanli:latest']
-        jvmArgs = ['-Xmx512m']
-    }
 }
 
 dockerCreateDockerfile {
@@ -96,8 +90,12 @@ def container() {
 }
 
 // use fully qualified class name
-import com.bmuschko.gradle.docker.tasks.image.*
-import com.bmuschko.gradle.docker.tasks.container.*
+
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 
 task createDockerfile(type: Dockerfile) {
@@ -107,7 +105,7 @@ task createDockerfile(type: Dockerfile) {
     from('openjdk:8')
     addFile("libs/${project.name}-${project.version}.jar", "/application.jar")
     exposePort(8084)
-    environmentVariable 'LANG','C.UTF-8'
+    environmentVariable 'LANG', 'C.UTF-8'
     entryPoint("java", "-jar", "-Duser.timezone=GMT+08", "/application.jar")
 }
 
@@ -118,7 +116,6 @@ task buildMyAppImage(type: DockerBuildImage) {
     inputDir = project.buildDir
     images.add(image())
 }
-
 
 
 task createMyAppContainer(type: DockerCreateContainer) {
