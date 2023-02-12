@@ -1,10 +1,12 @@
 package com.songyuankun.reply.controller;
 
+import com.songyuankun.jd.UnionJdProxy;
 import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.reply.service.WeChatService;
 import com.songyuankun.unionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,9 @@ public class MessageController {
 
     private final WeChatService weChatService;
     private final List<unionService> unionServiceList;
+
+    @Autowired
+    private UnionJdProxy unionJdProxy;
 
     public MessageController(WeChatService weChatService, List<unionService> unionServiceList) {
         this.weChatService = weChatService;
@@ -54,6 +59,12 @@ public class MessageController {
         } else {
             return "";
         }
+    }
+
+    @GetMapping
+    public String test() {
+        return unionJdProxy.getJingFen("3100139794");
+
     }
 
 }

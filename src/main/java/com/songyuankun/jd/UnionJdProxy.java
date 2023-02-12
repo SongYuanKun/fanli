@@ -1,20 +1,18 @@
 package com.songyuankun.jd;
 
-import cn.hutool.http.Header;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpStatus;
-import cn.hutool.http.HttpUtil;
+import cn.hutool.http.*;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
-import com.jd.open.api.sdk.domain.kplunion.GoodsService.response.query.PromotionGoodsResp;
-import com.jd.open.api.sdk.domain.kplunion.GoodsService.response.query.PromotionQueryResult;
+import com.jd.open.api.sdk.domain.kplunion.GoodsService.request.query.JFGoodsReq;
+import com.jd.open.api.sdk.domain.kplunion.GoodsService.response.query.*;
 import com.jd.open.api.sdk.domain.kplunion.promotioncommon.PromotionService.request.get.PromotionCodeReq;
 import com.jd.open.api.sdk.domain.kplunion.promotioncommon.PromotionService.response.get.PromotionCodeResp;
+import com.jd.open.api.sdk.request.kplunion.UnionOpenGoodsJingfenQueryRequest;
 import com.jd.open.api.sdk.request.kplunion.UnionOpenGoodsPromotiongoodsinfoQueryRequest;
 import com.jd.open.api.sdk.request.kplunion.UnionOpenPromotionCommonGetRequest;
+import com.jd.open.api.sdk.response.kplunion.UnionOpenGoodsJingfenQueryResponse;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenGoodsPromotiongoodsinfoQueryResponse;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenPromotionCommonGetResponse;
 import lombok.Synchronized;
@@ -139,6 +137,56 @@ public class UnionJdProxy {
             throw new RuntimeException("用户创建失败");
         }
     }
+
+
+    public String getJingFen(String positionId) {
+        String shareText = "";
+        JdClient client = new DefaultJdClient(API_URL, null, appKey, secretKey);
+        UnionOpenGoodsJingfenQueryRequest request = new UnionOpenGoodsJingfenQueryRequest();
+        JFGoodsReq jfGoodsReq = new JFGoodsReq();
+        jfGoodsReq.setEliteId(10);
+        try {
+            UnionOpenGoodsJingfenQueryResponse execute = client.execute(request);
+            JingfenQueryResult queryResult = execute.getQueryResult();
+            JFGoodsResp[] data = queryResult.getData();
+            for (JFGoodsResp jfGoodsResp : data) {
+                String skuName = jfGoodsResp.getSkuName();
+                Long skuId = jfGoodsResp.getSkuId();
+                String materialUrl = "http://" + jfGoodsResp.getMaterialUrl();
+                CouponInfo couponInfos = jfGoodsResp.getCouponInfo();
+                String couponLink = "";
+                double discount = 0;
+
+                PriceInfo priceInfo = jfGoodsResp.getPriceInfo();
+                Integer lowestPriceType = priceInfo.getLowestPriceType();
+                boolean isCoupon = false;
+                Coupon[] couponList = couponInfos.getCouponList();
+                for (Coupon couponInfo : couponList) {
+                    discount = couponInfo.getDiscount();
+                    couponLink = couponInfo.getLink();
+                    isCoupon = true;
+
+                }
+                if (isCoupon) {
+                    if (lowestPriceType.equals("3")) {
+                        SeckillInfo seckillInfo = jfGoodsResp.getSeckillInfo();
+                        double price = seckillInfo.getSeckillOriPrice();
+                        double lowestPrice = priceInfo.getLowestCouponPrice();
+                        shareText = "【秒杀】" + skuName + "\n——————————\n  【原价】¥" + price + "\n 【券后秒杀价】¥" + lowestPrice + "\n抢购地址：" + getGoodsInfo(materialUrl, positionId);
+
+                    } else {
+                        double price = priceInfo.getPrice();
+                        double lowestPrice = priceInfo.getLowestPrice();
+                        shareText = "【拼购】" + skuName + "\n——————————\n  【原价】¥" + price + "\n 【券后拼购价】¥" + lowestPrice + "\n抢购地址：" + getGoodsInfo(materialUrl, positionId);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return shareText;
+    }
+
 
     private String getPositionId() {
         String url = "https://api.m.jd.com/api";
