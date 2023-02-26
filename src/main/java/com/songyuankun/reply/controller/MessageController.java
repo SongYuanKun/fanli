@@ -61,10 +61,9 @@ public class MessageController {
         }
     }
 
-    @GetMapping
+    @GetMapping(produces = "text/html;charset=utf-8")
     public String test() {
-        return unionJdProxy.getJingFen("3100139794");
-
+        return unionJdProxy.getJingFen("3100139794",153);
     }
 
 }

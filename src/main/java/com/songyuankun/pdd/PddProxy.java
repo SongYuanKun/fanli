@@ -48,7 +48,6 @@ public class PddProxy {
         request.setGoodsSign(goodsSign);
         try {
             PddDdkGoodsDetailResponse response = client.syncInvoke(request);
-            System.out.println(JSON.toJSONString(response));
             return response.getGoodsDetailResponse().getGoodsDetails().get(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
