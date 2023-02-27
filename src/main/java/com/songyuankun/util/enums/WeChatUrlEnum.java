@@ -8,6 +8,7 @@ public enum WeChatUrlEnum {
     /**
      * 添加永久素材
      */
+    UP_LOAD_NEWS("https://api.weixin.qq.com/cgi-bin/media/uploadnews"),
     ADD_NEWS("https://api.weixin.qq.com/cgi-bin/material/add_news"),
     ADD_MATERIAL("https://api.weixin.qq.com/cgi-bin/material/add_material"),
     UPLOAD_IMG("https://api.weixin.qq.com/cgi-bin/media/uploadimg"),

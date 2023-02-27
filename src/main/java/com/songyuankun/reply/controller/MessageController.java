@@ -4,11 +4,17 @@ import com.songyuankun.jd.UnionJdProxy;
 import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.reply.service.WeChatService;
 import com.songyuankun.unionService;
+import com.songyuankun.util.WeChatUtil;
+import com.songyuankun.wechat.WxMpMassNews;
+import com.songyuankun.wechat.WxMpNewsArticle;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,13 +26,15 @@ import java.util.List;
 public class MessageController {
 
     private final WeChatService weChatService;
+    private final WeChatUtil weChatUtil;
     private final List<unionService> unionServiceList;
 
     @Autowired
     private UnionJdProxy unionJdProxy;
 
-    public MessageController(WeChatService weChatService, List<unionService> unionServiceList) {
+    public MessageController(WeChatService weChatService, WeChatUtil weChatUtil, List<unionService> unionServiceList) {
         this.weChatService = weChatService;
+        this.weChatUtil = weChatUtil;
         this.unionServiceList = unionServiceList;
     }
 
@@ -62,8 +70,14 @@ public class MessageController {
     }
 
     @GetMapping(produces = "text/html;charset=utf-8")
-    public String test() {
-        return unionJdProxy.getJingFen("3100139794",153);
+    public void test() {
+        String jingFen = unionJdProxy.getJingFen("3100139794", 153);
+        WxMpMassNews wxMpMassNews = new WxMpMassNews();
+        WxMpNewsArticle wxMpNewsArticle = new WxMpNewsArticle();
+        wxMpNewsArticle.setTitle("每日推荐");
+        wxMpNewsArticle.setContent(jingFen);
+        wxMpMassNews.setArticles(Collections.singletonList(wxMpNewsArticle));
+        weChatUtil.sendWeChatArticles(wxMpMassNews);
     }
 
 }

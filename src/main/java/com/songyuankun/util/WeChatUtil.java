@@ -6,6 +6,7 @@ import com.songyuankun.util.enums.WeChatUrlEnum;
 
 import com.songyuankun.wechat.WxMpMassNews;
 import com.songyuankun.wechat.WxMpNewsArticle;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
@@ -87,9 +88,9 @@ public class WeChatUtil {
         return weChatUrlEnum.getUrl() + "?access_token=" + getAccessTokenFromRedis();
     }
 
-    public String sendWeChatArticles(WxMpMassNews articles) {
-        HttpUtil.post("", articles.toString());
-        return "";
+    public void sendWeChatArticles(WxMpMassNews articles) {
+        String weChatUrl = getWeChatUrl(WeChatUrlEnum.UPLOAD_IMG);
+        HttpUtil.post(weChatUrl, articles.toString());
     }
 
 

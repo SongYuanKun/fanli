@@ -201,7 +201,7 @@ public class UnionJdProxy {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return shareText.toString().toString();
+        return shareText.toString();
     }
 
 
