@@ -1,5 +1,6 @@
 package com.songyuankun.jd;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
 import com.jd.open.api.sdk.domain.kplunion.GoodsService.request.query.JFGoodsReq;
@@ -194,6 +195,10 @@ public class UnionJdProxy {
         OrderRowReq orderReq = new OrderRowReq();
         orderReq.setPageIndex(1);
         orderReq.setPageIndex(1000);
+        orderReq.setType(3);
+        orderReq.setStartTime(LocalDateTimeUtil.format(LocalDateTimeUtil.now().minusMinutes(-30), "yyyy-MM-dd HH:mm:ss"));
+        orderReq.setEndTime(LocalDateTimeUtil.format(LocalDateTimeUtil.now(), "yyyy-MM-dd HH:mm:ss"));
+
         request.setOrderReq(orderReq);
         request.setVersion("1.0");
         try {
