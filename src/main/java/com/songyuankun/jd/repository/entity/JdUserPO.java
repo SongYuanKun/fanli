@@ -42,4 +42,7 @@ public class JdUserPO extends BaseEntity {
     @Column(name = "position_id", nullable = false)
     private String positionId;
 
+    @Column(name = "default_user", nullable = false)
+    private Boolean defaultUser;
+
 }

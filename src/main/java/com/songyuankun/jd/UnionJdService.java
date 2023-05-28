@@ -25,18 +25,7 @@ public class UnionJdService implements unionService {
     }
 
     public JdUserPO getJdUser(String id) {
-        return jdUserRepository.findFirstByWechatUser(id).orElseGet(() -> createJdUser(id));
-    }
-
-    private JdUserPO createJdUser(String wechatUser) {
-        if (StringUtils.isBlank(wechatUser)) {
-            return null;
-        }
-        String position = unionJdProxy.createPosition(wechatUser);
-        JdUserPO jdUserPO = new JdUserPO();
-        jdUserPO.setWechatUser(wechatUser);
-        jdUserPO.setPositionId(position);
-        return jdUserRepository.save(jdUserPO);
+        return jdUserRepository.findFirstByWechatUser(id).orElseGet(jdUserRepository::findFirstByDefaultUserIsTrue);
     }
 
     @Override
@@ -45,7 +34,7 @@ public class UnionJdService implements unionService {
         if (StringUtils.isBlank(skuId)) {
             return null;
         }
-        JdUserPO jdUserPO = getJdUser(fromUserId);
-        return unionJdProxy.getGoodsInfo(skuUrl, jdUserPO.getPositionId());
+        JdUserPO jdUser = getJdUser(fromUserId);
+        return unionJdProxy.getGoodsInfo(skuUrl, jdUser.getPositionId());
     }
 }

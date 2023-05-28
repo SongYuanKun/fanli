@@ -15,4 +15,6 @@ public interface JdUserRepository extends JpaRepository<JdUserPO, Integer>, JpaS
 
     Optional<JdUserPO> findFirstByWechatUser(String wechatUser);
 
+    JdUserPO findFirstByDefaultUserIsTrue();
+
 }

@@ -1,6 +1,8 @@
 package com.songyuankun.reply.controller;
 
 import com.songyuankun.jd.UnionJdProxy;
+import com.songyuankun.jd.repository.JdUserRepository;
+import com.songyuankun.jd.repository.entity.JdUserPO;
 import com.songyuankun.reply.dto.MessageDTO;
 import com.songyuankun.reply.service.WeChatService;
 import com.songyuankun.unionService;
@@ -28,23 +30,33 @@ public class MessageController {
     private final WeChatService weChatService;
     private final WeChatUtil weChatUtil;
     private final List<unionService> unionServiceList;
+    private final JdUserRepository jdUserRepository;
 
     @Autowired
     private UnionJdProxy unionJdProxy;
 
-    public MessageController(WeChatService weChatService, WeChatUtil weChatUtil, List<unionService> unionServiceList) {
+    public MessageController(WeChatService weChatService, WeChatUtil weChatUtil, List<unionService> unionServiceList, JdUserRepository jdUserRepository) {
         this.weChatService = weChatService;
         this.weChatUtil = weChatUtil;
         this.unionServiceList = unionServiceList;
+        this.jdUserRepository = jdUserRepository;
     }
 
     @PostMapping(value = "auto-reply", consumes = "text/xml", produces = "text/xml")
     public MessageDTO autoReplay(@RequestBody MessageDTO messageDTO) {
         log.info("messageDTO:{}", messageDTO);
         String command = null;
+        String content = messageDTO.getContent();
+        String fromUserName = messageDTO.getFromUserName();
+        if (!jdUserRepository.findFirstByWechatUser(fromUserName).isPresent() && content.contains("用户注册码：")) {
+            JdUserPO jdUserPO = new JdUserPO();
+            jdUserPO.setWechatUser(fromUserName);
+            jdUserPO.setPositionId(content.replace("用户注册码：", ""));
+            jdUserRepository.save(jdUserPO);
+        }
         try {
             for (unionService unionService : unionServiceList) {
-                command = unionService.getGoodInfo(messageDTO.getContent(), messageDTO.getFromUserName());
+                command = unionService.getGoodInfo(content, fromUserName);
                 if (StringUtils.isNotBlank(command)) {
                     break;
                 }
