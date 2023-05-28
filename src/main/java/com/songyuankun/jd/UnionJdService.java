@@ -39,7 +39,7 @@ public class UnionJdService implements unionService {
     }
 
     public String getOrderInfo(String positionId) {
-        return
+        return StringUtils.defaultIfBlank(
                 unionJdProxy.getOrderInfo(positionId)
                         .stream()
                         .map(orderRowResp ->
@@ -48,6 +48,8 @@ public class UnionJdService implements unionService {
                                         "实际佣金：" + orderRowResp.getActualCosPrice() / 2 + "\r\n" +
                                         "--------------------------------------------------------"
                         )
-                        .collect(Collectors.joining());
+                        .collect(Collectors.joining()),
+                "无订单"
+        );
     }
 }

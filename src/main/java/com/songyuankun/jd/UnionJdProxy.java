@@ -194,17 +194,18 @@ public class UnionJdProxy {
         UnionOpenOrderRowQueryRequest request = new UnionOpenOrderRowQueryRequest();
         OrderRowReq orderReq = new OrderRowReq();
         orderReq.setPageIndex(1);
-        orderReq.setPageIndex(1000);
+        orderReq.setPageSize(999);
         orderReq.setType(3);
-        orderReq.setStartTime(LocalDateTimeUtil.format(LocalDateTimeUtil.now().minusMinutes(-30), "yyyy-MM-dd HH:mm:ss"));
+        orderReq.setStartTime(LocalDateTimeUtil.format(LocalDateTimeUtil.now().minusMinutes(30), "yyyy-MM-dd HH:mm:ss"));
         orderReq.setEndTime(LocalDateTimeUtil.format(LocalDateTimeUtil.now(), "yyyy-MM-dd HH:mm:ss"));
-
         request.setOrderReq(orderReq);
         request.setVersion("1.0");
         try {
             UnionOpenOrderRowQueryResponse response = client.execute(request);
             OrderRowQueryResult queryResult = response.getQueryResult();
-            return Arrays.stream(queryResult.getData()).filter(orderRowResp -> Objects.equals(orderRowResp.getPositionId(), Long.parseLong(positionId))).collect(Collectors.toList());
+            return Arrays.stream(ArrayUtils.nullToEmpty(queryResult.getData(), OrderRowResp[].class))
+                    .filter(orderRowResp -> Objects.equals(orderRowResp.getPositionId(), Long.parseLong(positionId)))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
