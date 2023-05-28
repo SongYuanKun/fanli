@@ -1,6 +1,5 @@
 package com.songyuankun.pdd;
 
-import com.alibaba.fastjson2.JSON;
 import com.pdd.pop.sdk.http.PopClient;
 import com.pdd.pop.sdk.http.PopHttpClient;
 import com.pdd.pop.sdk.http.api.pop.request.PddDdkGoodsDetailRequest;
@@ -18,13 +17,22 @@ import java.util.regex.Pattern;
  */
 @Service
 public class PddProxy {
+    private final static Pattern PATTERN = Pattern.compile("goods_sign=\\w*");
     @Value("${pdd.pid}")
     private String pid;
     @Value("${pdd.client_id}")
     private String clientId;
     @Value("${pdd.client_secret}")
     private String clientSecret;
-    private final static Pattern PATTERN = Pattern.compile("goods_sign=\\w*");
+
+    public static String getGoodsSign(String skuUrl) {
+        Matcher m = PATTERN.matcher(skuUrl);
+        if (!m.find()) {
+            return "";
+        }
+        String url = m.group();
+        return url.substring(url.lastIndexOf("goods_sign=") + 11);
+    }
 
     public PddDdkGoodsZsUnitUrlGenResponse.GoodsZsUnitGenerateResponse getPddDdkGoodsZsUnitUrlGen(String url) {
         PopClient client = new PopHttpClient(clientId, clientSecret);
@@ -52,15 +60,5 @@ public class PddProxy {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    public static String getGoodsSign(String skuUrl) {
-        Matcher m = PATTERN.matcher(skuUrl);
-        if (!m.find()) {
-            return "";
-        }
-        String url = m.group();
-        return url.substring(url.lastIndexOf("goods_sign=") + 11);
     }
 }

@@ -3,7 +3,6 @@ package com.songyuankun.pdd;
 import com.pdd.pop.sdk.http.api.pop.response.PddDdkGoodsDetailResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddDdkGoodsZsUnitUrlGenResponse;
 import com.songyuankun.unionService;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -48,7 +47,6 @@ public class PddService implements unionService {
                         .multiply(new BigDecimal("0.00001"))
                         .setScale(2, RoundingMode.DOWN) +
                 "\r\n" +
-                "下单地址：" + pddDdkGoodsZsUnitUrlGen.getMultiGroupMobileShortUrl() +
-                "";
+                "下单地址：" + pddDdkGoodsZsUnitUrlGen.getMultiGroupMobileShortUrl();
     }
 }

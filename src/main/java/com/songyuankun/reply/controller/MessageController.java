@@ -9,9 +9,7 @@ import com.songyuankun.unionService;
 import com.songyuankun.util.WeChatUtil;
 import com.songyuankun.wechat.WxMpMassNews;
 import com.songyuankun.wechat.WxMpNewsArticle;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

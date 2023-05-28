@@ -3,11 +3,9 @@ package com.songyuankun.jd;
 import com.songyuankun.jd.repository.JdUserRepository;
 import com.songyuankun.jd.repository.entity.JdUserPO;
 import com.songyuankun.unionService;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author songyuankun

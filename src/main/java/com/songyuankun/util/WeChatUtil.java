@@ -1,12 +1,11 @@
 package com.songyuankun.util;
 
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.songyuankun.util.enums.WeChatUrlEnum;
-
 import com.songyuankun.wechat.WxMpMassNews;
-import com.songyuankun.wechat.WxMpNewsArticle;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
@@ -23,36 +22,22 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.hutool.http.HttpUtil;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author songyuankun
  */
 @Component
 @Slf4j
 public class WeChatUtil {
+    private final RestTemplate restTemplate;
+    private final RedisUtil redisUtil;
     @Value("${my.wechat.appid}")
     private String appId;
     @Value("${my.wechat.secret}")
     private String secret;
 
-    private final RestTemplate restTemplate;
-    private final RedisUtil redisUtil;
-
     public WeChatUtil(RedisUtil redisUtil, RestTemplate restTemplate) {
         this.redisUtil = redisUtil;
         this.restTemplate = restTemplate;
-    }
-
-    private String getAccessToken() {
-        HashMap<String, Object> parameters = new HashMap<>(4);
-        parameters.put("grant_type", "client_credential");
-        parameters.put("appid", appId);
-        parameters.put("secret", secret);
-        String s = HttpUtil.get(WeChatUrlEnum.TOKEN.getUrl(), parameters);
-        JSONObject jsonObject = JSON.parseObject(s);
-        return jsonObject.getString("access_token");
     }
 
     /**
@@ -71,6 +56,16 @@ public class WeChatUtil {
             }
         }
         return src;
+    }
+
+    private String getAccessToken() {
+        HashMap<String, Object> parameters = new HashMap<>(4);
+        parameters.put("grant_type", "client_credential");
+        parameters.put("appid", appId);
+        parameters.put("secret", secret);
+        String s = HttpUtil.get(WeChatUrlEnum.TOKEN.getUrl(), parameters);
+        JSONObject jsonObject = JSON.parseObject(s);
+        return jsonObject.getString("access_token");
     }
 
     private String getAccessTokenFromRedis() {

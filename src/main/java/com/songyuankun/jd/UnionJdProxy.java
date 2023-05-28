@@ -1,7 +1,5 @@
 package com.songyuankun.jd;
 
-import cn.hutool.http.*;
-import com.alibaba.fastjson2.JSONObject;
 import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
 import com.jd.open.api.sdk.domain.kplunion.GoodsService.request.query.JFGoodsReq;
@@ -14,7 +12,6 @@ import com.jd.open.api.sdk.request.kplunion.UnionOpenPromotionCommonGetRequest;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenGoodsJingfenQueryResponse;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenGoodsPromotiongoodsinfoQueryResponse;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenPromotionCommonGetResponse;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -42,8 +39,6 @@ public class UnionJdProxy {
     private String secretKey;
     @Value("${jd.site_id}")
     private Long siteId;
-    @Value("${jd.web_cookie}")
-    private String webCookie;
 
     public String getCommand(final String skuUrl, String positionId) {
         String materialId = null;
@@ -101,7 +96,7 @@ public class UnionJdProxy {
                 return "该商品不参与优惠";
             }
             PromotionGoodsResp datum = data[0];
-            return "商品名称：" + datum.getGoodsName() + "\r\n" + "价格：" + datum.getUnitPrice() + "\r\n" + "返佣比例：" + datum.getCommisionRatioWl() + "%\r\n" + "预计返佣：" + BigDecimal.valueOf(datum.getUnitPrice()).multiply(BigDecimal.valueOf(datum.getCommisionRatioWl())).multiply(new BigDecimal("0.01")).setScale(2, RoundingMode.DOWN) + "\r\n" + "下单地址：" + url + "";
+            return "商品名称：" + datum.getGoodsName() + "\r\n" + "价格：" + datum.getUnitPrice() + "\r\n" + "返佣比例：" + datum.getCommisionRatioWl() + "%\r\n" + "预计返佣：" + BigDecimal.valueOf(datum.getUnitPrice()).multiply(BigDecimal.valueOf(datum.getCommisionRatioWl())).multiply(new BigDecimal("0.01")).setScale(2, RoundingMode.DOWN) + "\r\n" + "下单地址：" + url;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -137,28 +132,9 @@ public class UnionJdProxy {
         }
     }
 
-    @Synchronized
-    public String createPosition(String id) {
-        String url = "https://api.m.jd.com/api";
-        JSONObject param = new JSONObject();
-        param.put("siteId", siteId);
-        param.put("spaceName", id);
-        param.put("type", 1);
-        param.put("unionType", 1);
-
-        JSONObject body = new JSONObject();
-        body.put("funName", "savePromotionSite");
-        JSONObject result = queryUnionJdWeb(url, param, body);
-        if (Objects.equals(result.getInteger("code"), HttpStatus.HTTP_OK)) {
-            return getPositionId();
-        } else {
-            throw new RuntimeException("用户创建失败");
-        }
-    }
-
 
     public String getJingFen(String positionId, Integer eliteId) {
-        StringBuilder shareText = new StringBuilder(new String());
+        StringBuilder shareText = new StringBuilder();
         JdClient client = new DefaultJdClient(API_URL, null, appKey, secretKey);
         UnionOpenGoodsJingfenQueryRequest request = new UnionOpenGoodsJingfenQueryRequest();
         request.setVersion("1.0");
@@ -204,36 +180,4 @@ public class UnionJdProxy {
         return shareText.toString();
     }
 
-
-    private String getPositionId() {
-        String url = "https://api.m.jd.com/api";
-        JSONObject param = new JSONObject();
-        param.put("id", siteId);
-        param.put("onTYpe", 2);
-        param.put("promotionType", 1);
-        param.put("pageNo", 1);
-        param.put("pageSize", 1);
-
-        JSONObject body = new JSONObject();
-        body.put("funName", "listPromotionSite");
-        JSONObject result = queryUnionJdWeb(url, param, body);
-        return result.getJSONObject("data").getJSONArray("result").getJSONObject(0).getString("id");
-
-    }
-
-    private JSONObject queryUnionJdWeb(String url, JSONObject param, JSONObject body) {
-        body.put("param", param);
-
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("functionId", "unionPromotion");
-        jsonObject.put("appid", "u");
-        jsonObject.put("_", System.currentTimeMillis());
-        jsonObject.put("loginType", 3);
-        jsonObject.put("body", body);
-        HttpRequest httpRequest = HttpUtil.createGet(url).form(jsonObject).header(Header.COOKIE, webCookie);
-        try (HttpResponse execute = httpRequest.execute()) {
-            return JSONObject.parseObject(execute.body());
-        }
-    }
 }
