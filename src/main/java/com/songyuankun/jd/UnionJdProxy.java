@@ -4,13 +4,18 @@ import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
 import com.jd.open.api.sdk.domain.kplunion.GoodsService.request.query.JFGoodsReq;
 import com.jd.open.api.sdk.domain.kplunion.GoodsService.response.query.*;
+import com.jd.open.api.sdk.domain.kplunion.OrderService.request.query.OrderRowReq;
+import com.jd.open.api.sdk.domain.kplunion.OrderService.response.query.OrderRowQueryResult;
+import com.jd.open.api.sdk.domain.kplunion.OrderService.response.query.OrderRowResp;
 import com.jd.open.api.sdk.domain.kplunion.promotioncommon.PromotionService.request.get.PromotionCodeReq;
 import com.jd.open.api.sdk.domain.kplunion.promotioncommon.PromotionService.response.get.PromotionCodeResp;
 import com.jd.open.api.sdk.request.kplunion.UnionOpenGoodsJingfenQueryRequest;
 import com.jd.open.api.sdk.request.kplunion.UnionOpenGoodsPromotiongoodsinfoQueryRequest;
+import com.jd.open.api.sdk.request.kplunion.UnionOpenOrderRowQueryRequest;
 import com.jd.open.api.sdk.request.kplunion.UnionOpenPromotionCommonGetRequest;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenGoodsJingfenQueryResponse;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenGoodsPromotiongoodsinfoQueryResponse;
+import com.jd.open.api.sdk.response.kplunion.UnionOpenOrderRowQueryResponse;
 import com.jd.open.api.sdk.response.kplunion.UnionOpenPromotionCommonGetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -21,9 +26,12 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author songyuankun
@@ -180,4 +188,20 @@ public class UnionJdProxy {
         return shareText.toString();
     }
 
+    public List<OrderRowResp> getOrderInfo(String positionId) {
+        JdClient client = new DefaultJdClient(API_URL, null, appKey, secretKey);
+        UnionOpenOrderRowQueryRequest request = new UnionOpenOrderRowQueryRequest();
+        OrderRowReq orderReq = new OrderRowReq();
+        orderReq.setPageIndex(1);
+        orderReq.setPageIndex(1000);
+        request.setOrderReq(orderReq);
+        request.setVersion("1.0");
+        try {
+            UnionOpenOrderRowQueryResponse response = client.execute(request);
+            OrderRowQueryResult queryResult = response.getQueryResult();
+            return Arrays.stream(queryResult.getData()).filter(orderRowResp -> Objects.equals(orderRowResp.getPositionId(), Long.parseLong(positionId))).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

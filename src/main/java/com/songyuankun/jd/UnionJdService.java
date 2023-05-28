@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 /**
  * @author songyuankun
  */
@@ -34,5 +36,18 @@ public class UnionJdService implements unionService {
         }
         JdUserPO jdUser = getJdUser(fromUserId);
         return unionJdProxy.getGoodsInfo(skuUrl, jdUser.getPositionId());
+    }
+
+    public String getOrderInfo(String positionId) {
+        return
+                unionJdProxy.getOrderInfo(positionId)
+                        .stream()
+                        .map(orderRowResp ->
+                                "商品名称：" + orderRowResp.getSkuName() + "\r\n" +
+                                        "价格：" + orderRowResp.getPrice() + "\r\n" +
+                                        "实际佣金：" + orderRowResp.getActualCosPrice() / 2 + "\r\n" +
+                                        "--------------------------------------------------------"
+                        )
+                        .collect(Collectors.joining());
     }
 }

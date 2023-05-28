@@ -1,6 +1,7 @@
 package com.songyuankun.reply.controller;
 
 import com.songyuankun.jd.UnionJdProxy;
+import com.songyuankun.jd.UnionJdService;
 import com.songyuankun.jd.repository.JdUserRepository;
 import com.songyuankun.jd.repository.entity.JdUserPO;
 import com.songyuankun.reply.dto.MessageDTO;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author songyuankun
@@ -28,15 +30,17 @@ public class MessageController {
     private final WeChatService weChatService;
     private final WeChatUtil weChatUtil;
     private final List<unionService> unionServiceList;
+    private final UnionJdService unionJdService;
     private final JdUserRepository jdUserRepository;
 
     @Autowired
     private UnionJdProxy unionJdProxy;
 
-    public MessageController(WeChatService weChatService, WeChatUtil weChatUtil, List<unionService> unionServiceList, JdUserRepository jdUserRepository) {
+    public MessageController(WeChatService weChatService, WeChatUtil weChatUtil, List<unionService> unionServiceList, UnionJdService unionJdService, JdUserRepository jdUserRepository) {
         this.weChatService = weChatService;
         this.weChatUtil = weChatUtil;
         this.unionServiceList = unionServiceList;
+        this.unionJdService = unionJdService;
         this.jdUserRepository = jdUserRepository;
     }
 
@@ -46,26 +50,33 @@ public class MessageController {
         String command = null;
         String content = messageDTO.getContent();
         String fromUserName = messageDTO.getFromUserName();
-        if (!jdUserRepository.findFirstByWechatUser(fromUserName).isPresent() && content.contains("用户注册码：")) {
+        Optional<JdUserPO> wechatUser = jdUserRepository.findFirstByWechatUser(fromUserName);
+        if (!wechatUser.isPresent() && content.contains("用户注册码：")) {
             JdUserPO jdUserPO = new JdUserPO();
             jdUserPO.setWechatUser(fromUserName);
             jdUserPO.setPositionId(content.replace("用户注册码：", ""));
             jdUserRepository.save(jdUserPO);
         }
-        try {
-            for (unionService unionService : unionServiceList) {
-                command = unionService.getGoodInfo(content, fromUserName);
-                if (StringUtils.isNotBlank(command)) {
-                    break;
-                }
-            }
-            if (StringUtils.isBlank(command)) {
-                command = "仅支持淘宝、京东、拼多多的链接。或该商品不参与优惠";
+        if (wechatUser.isPresent() && content.equals("查询")) {
+            command = unionJdService.getOrderInfo(wechatUser.get().getPositionId());
+        }
 
+        if (StringUtils.isBlank(command)) {
+            try {
+                for (unionService unionService : unionServiceList) {
+                    command = unionService.getGoodInfo(content, fromUserName);
+                    if (StringUtils.isNotBlank(command)) {
+                        break;
+                    }
+                }
+                if (StringUtils.isBlank(command)) {
+                    command = "仅支持淘宝、京东、拼多多的链接。或该商品不参与优惠";
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return messageDTO.replay(e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return messageDTO.replay(e.getMessage());
         }
         return messageDTO.replay(command);
     }
