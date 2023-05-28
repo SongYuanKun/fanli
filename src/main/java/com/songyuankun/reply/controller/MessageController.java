@@ -55,6 +55,7 @@ public class MessageController {
             JdUserPO jdUserPO = new JdUserPO();
             jdUserPO.setWechatUser(fromUserName);
             jdUserPO.setPositionId(content.replace("用户注册码：", ""));
+            jdUserPO.setDefaultUser(false);
             jdUserRepository.save(jdUserPO);
         }
         if (wechatUser.isPresent() && content.equals("查询")) {
